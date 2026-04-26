@@ -65,7 +65,6 @@ async function loadModels() {
         });
         modelSelect.appendChild(publicGroup);
 
-        // Default to first local model
         if (availableModels.length > 0) {
             modelSelect.selectedIndex = 0;
             handleModelChange();
@@ -145,6 +144,13 @@ async function loadConversation(conversationId) {
     }
 }
 
+function getToolBadge(tool) {
+    if (!tool) return '';
+    const icons = { math: '🧮', weather: '🌤️' };
+    const icon = icons[tool] || '🔧';
+    return `<span class="tool-badge">${icon} ${tool} tool</span>`;
+}
+
 function renderConversation(conversation) {
     const chatMessages = document.getElementById('chatMessages');
     const chatTitle = document.getElementById('chatTitle');
@@ -156,7 +162,8 @@ function renderConversation(conversation) {
         chatMessages.innerHTML = `
             <div class="welcome-message">
                 <h3>Start a conversation</h3>
-                <p>Your messages and replies will appear here.</p>
+                <p>Select a model above, then type your message below.<br>
+                Try asking a math question like "what is 234 * 567?" or a weather question like "what is the weather in Tokyo?"</p>
             </div>
         `;
         return;
@@ -166,6 +173,7 @@ function renderConversation(conversation) {
         <div class="message ${message.role === 'user' ? 'user' : 'ai'}">
             <div class="message-content">
                 ${formatMessageContent(message.content)}
+                ${message.role === 'assistant' ? getToolBadge(message.tool) : ''}
                 <div class="message-timestamp">${formatDate(message.createdAt)}</div>
             </div>
         </div>
@@ -253,7 +261,9 @@ function escapeHtml(text) {
 }
 
 function formatMessageContent(text) {
-    return escapeHtml(text).replace(/\n/g, '<br>');
+    return escapeHtml(text)
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
 }
 
 function debounce(fn, wait = 200) {

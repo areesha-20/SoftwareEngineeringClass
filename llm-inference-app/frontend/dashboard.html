@@ -38,6 +38,16 @@
         }
         .model-badge.local  { background: #d4edda; color: #155724; }
         .model-badge.public { background: #cce5ff; color: #004085; }
+        .tool-badge {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: #fff3cd;
+            color: #856404;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -87,14 +97,15 @@
                 <div class="chat-messages" id="chatMessages">
                     <div class="welcome-message">
                         <h3>Start a conversation</h3>
-                        <p>Select a model above, then type your message below.</p>
+                        <p>Select a model above, then type your message below.<br>
+                        Try asking a math question like "what is 234 * 567?" or a weather question like "what is the weather in Tokyo?"</p>
                     </div>
                 </div>
 
                 <div class="chat-input-area">
                     <form id="chatForm" class="chat-form">
                         <div class="chat-form-row">
-                            <textarea id="promptInput" class="chat-input" placeholder="Ask me anything..." rows="3" required></textarea>
+                            <textarea id="promptInput" class="chat-input" placeholder="Ask me anything... try 'what is 15 * 24?' or 'weather in Paris'" rows="3" required></textarea>
                             <button type="submit" class="btn btn-primary btn-send">Send</button>
                         </div>
                         <span class="error-message" id="chatError"></span>

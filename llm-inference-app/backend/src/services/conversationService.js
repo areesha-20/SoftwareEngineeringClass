@@ -1,5 +1,6 @@
 const FileStore = require('../database/fileStore');
 const LlmService = require('./llmService');
+const ToolRunner = require('../tools/toolRunner');
 
 class ConversationService {
   static async listConversations(userId, { search = '' } = {}) {
@@ -25,6 +26,7 @@ class ConversationService {
         messageId: m.message_id,
         role: m.role,
         content: m.content,
+        tool: m.tool || null,
         createdAt: m.created_at
       }))
     };
@@ -36,12 +38,26 @@ class ConversationService {
 
     await FileStore.appendMessage(userId, conversationId, { role: 'user', content: prompt });
 
-    const updatedConversation = await FileStore.getConversation(userId, conversationId);
-    const assistantReply = await LlmService.generateReply(prompt, updatedConversation, provider, model);
+    // Try tool calling first
+    const toolResult = await ToolRunner.run(prompt);
+
+    let assistantReply;
+    let toolUsed = null;
+
+    if (toolResult) {
+      // Tool handled it — use tool result as the reply
+      assistantReply = toolResult.message;
+      toolUsed = toolResult.tool;
+    } else {
+      // No tool matched — send to LLM
+      const updatedConversation = await FileStore.getConversation(userId, conversationId);
+      assistantReply = await LlmService.generateReply(prompt, updatedConversation, provider, model);
+    }
 
     const finalConversation = await FileStore.appendMessage(userId, conversationId, {
       role: 'assistant',
-      content: assistantReply
+      content: assistantReply,
+      tool: toolUsed
     });
 
     return {
@@ -54,10 +70,12 @@ class ConversationService {
           messageId: m.message_id,
           role: m.role,
           content: m.content,
+          tool: m.tool || null,
           createdAt: m.created_at
         }))
       },
-      assistantReply
+      assistantReply,
+      toolUsed
     };
   }
 
