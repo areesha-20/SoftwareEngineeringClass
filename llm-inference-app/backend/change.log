@@ -1,0 +1,12 @@
+Feature 1: Chat with an LLM
+Feature 2: Save conversation history
+Feature 3: View conversation history
+Feature 4: Search conversation history
+Feature 5: Resume previous conversation
+
+--- Iteration 3 ---
+Feature 6: Select backend LLM (model picker UI + /api/v1/models endpoint) [PR 4](https://github.com/dhan928/SoftwareEngineeringClass/pull/4)
+Feature 7: Local model support via Ollama (llama3, llama3.2) [PR 4](https://github.com/dhan928/SoftwareEngineeringClass/pull/4)
+Feature 8: Public model support (OpenAI GPT, Google Gemini, Anthropic Claude) [PR 4](https://github.com/dhan928/SoftwareEngineeringClass/pull/4)
+Feature 9: Math question tool calling (chain-of-thought calculation) [PR 4](https://github.com/dhan928/SoftwareEngineeringClass/pull/4)
+Feature 10: Weather question tool calling (real-time weather API) [PR 4](https://github.com/dhan928/SoftwareEngineeringClass/pull/4)
